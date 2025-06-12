@@ -6,12 +6,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 class BaseTest(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         options = Options()
-        # options.add_argument("--headless")  # Uncomment for headless tests
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        self.wait = WebDriverWait(self.driver, 10)
-        self.driver.get("https://www.marriagevendors.com/")
+        # options.add_argument("--headless")  # Uncomment this to run without opening browser window
+        cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        cls.driver.maximize_window()
+        cls.wait = WebDriverWait(cls.driver, 15)
+        cls.driver.get("https://www.marriagevendors.com/")
 
-    def tearDown(self):
-        self.driver.quit()
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()

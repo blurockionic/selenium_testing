@@ -22,3 +22,17 @@ def login(driver, wait, email, password):
     # Wait for "Login successful" message to appear and disappear
     success_msg = wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Login successful')]")))
     wait.until(EC.invisibility_of_element(success_msg))
+
+def close_modal_if_present(driver, wait):
+    """
+    Closes a modal if it appears by clicking the close button (X) with aria-label 'Close'.
+    """
+    try:
+        close_btn = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Close']"))
+        )
+        close_btn.click()
+        print("Modal closed.")
+    except Exception:
+        # Modal did not appear, or already closed
+        pass
