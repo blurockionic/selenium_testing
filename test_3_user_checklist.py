@@ -3,7 +3,7 @@ from base_test import BaseTest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import unittest
-from utils import login
+from utils import user_login
 import random
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -12,7 +12,7 @@ class TestUserChecklist(BaseTest):
     def setUpClass(cls):
         super().setUpClass()
         # Perform login before running the tests
-        login(cls.driver, cls.wait, "armanmarya6@gmail.com", "Arman2005@")
+        user_login(cls.driver, cls.wait, "armanmarya6@gmail.com", "Arman2005@")
 
     def test_1_checklist_page_access(self):
         # Wait for any toast notifications to disappear

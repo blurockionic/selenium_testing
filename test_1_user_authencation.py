@@ -1,5 +1,5 @@
 from base_test import BaseTest
-from utils import login, close_modal_if_present
+from utils import user_login, close_modal_if_present
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
