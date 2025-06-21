@@ -81,6 +81,33 @@ class TestUserWeddingPlanner(BaseTest):
                 (By.XPATH, '//*[@id="root"]/div[2]/div/div/div[2]/div/div[3]')
             )
         )
+        # Submit with empty fields to check validation
+        create_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(text(), 'Create Event')]")
+            )
+        )
+        create_button.click()
+
+        # Check for validation errors
+        self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[contains(text(), 'Event Name is required')]")
+            )
+        )
+        self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[contains(text(), 'Event budget is required')]")
+            )
+        )
+        self.wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[contains(text(), 'Event Date is required')]")
+            )
+        )
+        # log the validation errors
+        print("✅ Validation errors displayed as expected.")
+
         # Fill in the event details
         event_name_input = self.wait.until(
             EC.presence_of_element_located((By.NAME, "eventName"))
