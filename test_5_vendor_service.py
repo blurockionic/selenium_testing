@@ -8,6 +8,7 @@ import random
 from selenium.webdriver.common.action_chains import ActionChains
 from datetime import datetime, timedelta
 from selenium.webdriver.support.ui import Select
+import os
 
 
 class TestVendorService(BaseTest):
@@ -251,40 +252,50 @@ class TestVendorService(BaseTest):
         edit_icon = first_faq.find_element(By.CLASS_NAME, "text-green-500")
         edit_icon.click()
         # wait for the edit modal to appear
-        question_input = self.wait.until(EC.presence_of_element_located((By.NAME, "question")))
+        question_input = self.wait.until(
+            EC.presence_of_element_located((By.NAME, "question"))
+        )
         question_input.clear()
         question_input.send_keys("What is your updated cancellation policy?")
-        answer_textarea = self.wait.until(EC.presence_of_element_located((By.NAME, "answer")))
+        answer_textarea = self.wait.until(
+            EC.presence_of_element_located((By.NAME, "answer"))
+        )
         answer_textarea.clear()
-        answer_textarea.send_keys("You can cancel up to 5 days before the event for a full refund.")
+        answer_textarea.send_keys(
+            "You can cancel up to 5 days before the event for a full refund."
+        )
 
         # Find and click the 'SAVE' button by its type only
         save_button = self.wait.until(
-            EC.element_to_be_clickable(
-            (By.XPATH, "//button[@type='submit']")
-            )
+            EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
         )
         # Scroll to the save button to ensure it's in view
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", save_button)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", save_button
+        )
         # wait for button visibility
         time.sleep(0.5)
         save_button.click()
 
         # wait for the updated FAQ to appear
-        updated_faq_answer = "You can cancel up to 5 days before the event for a full refund."
+        updated_faq_answer = (
+            "You can cancel up to 5 days before the event for a full refund."
+        )
         updated_faq_answer_elem = self.wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, f"//p[contains(text(), '{updated_faq_answer}')]")
             )
         )
-        self.assertIsNotNone(updated_faq_answer_elem, "Updated FAQ answer not found on the page.")
+        self.assertIsNotNone(
+            updated_faq_answer_elem, "Updated FAQ answer not found on the page."
+        )
         print("✅ FAQ updated successfully.")
 
         # find the delete icon (SVG) within the first FAQ item using class cursor-pointer text-red-500
         # Select the SVG delete icon within the first FAQ item by its class
         delete_icon = first_faq.find_element(By.CLASS_NAME, "text-red-500")
         delete_icon.click()
-        
+
         # check for FAQ deleted successfully. message
         success_message = self.wait.until(
             EC.presence_of_element_located(
@@ -294,13 +305,167 @@ class TestVendorService(BaseTest):
         # wait for item to be deleted
         print("✅ FAQ deleted successfully.")
 
-    def test_5_delete_service(self):
+    def test_5_media_upload(self):
+        # Click the 'Media' button with bg-primary and text-white classes
+        media_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    '//*[@id="root"]/div[1]/div/div[2]/main/div/div[1]/button[2]',
+                )
+            )
+        )
+        media_button.click()
+
+        add_media_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    '//*[@id="root"]/div[1]/div/div[2]/main/div/div[6]/div[2]/div/div/form/div[2]/button[1]',
+                )
+            )
+        )
+        add_media_button.click()
+
+        # Locate the file input element and set the file path
+        file_input = self.wait.until(
+            EC.presence_of_element_located((By.XPATH, "//input[@type='file']"))
+        )
+        # Provide the absolute path to the file you want to upload
+        file_path = os.path.abspath(
+            "./images/test.png"
+        )  # Change this to your test file path if needed
+        file_input.send_keys(file_path)
+
+        # Click the 'Upload Files' button by its text and class
+        upload_files_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//button[span and contains(., 'Upload Files') and contains(@class, 'text-green-500')]",
+                )
+            )
+        )
+        upload_files_button.click()
+
+        media_items = self.wait.until(
+            EC.presence_of_all_elements_located(
+                (
+                    By.XPATH,
+                    '//*[@id="root"]/div[1]/div/div[2]/main/div/div[3]/div/div/div',
+                )
+            )
+        )
+        self.assertTrue(len(media_items) > 0, "No media items found after upload.")
+        print("✅ Media upload test passed.")
+
+    def test_6_delete_media(self):
+        media_items = self.wait.until(
+            EC.presence_of_all_elements_located(
+                (
+                    By.XPATH,
+                    '//*[@id="root"]/div[1]/div/div[2]/main/div/div[3]/div/div/div',
+                )
+            )
+        )
+        if not media_items:
+            self.fail("No media items found to delete.")
+        
+        # Select the first media item
+        first_media_item = media_items[0]
+
+        # Find the 'Delete Media' button inside the first media item by its title attribute
+        delete_media_button = first_media_item.find_element(By.XPATH, ".//button[@title='Delete Media']")
+        delete_media_button.click()
+
+        # Wait for the first media item to be removed from the DOM
+        self.wait.until(
+            EC.staleness_of(first_media_item)
+        )
+        print("✅ Media deleted successfully.")
+
+    def test_7_edit_service(self):
+        # Click the 'Edit Service' button at the specified XPath
         try:
-            self.wait.until_not(EC.presence_of_element_located((By.CLASS_NAME, "Toastify__toast-body")))
+            self.wait.until_not(
+                EC.presence_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))
+            )
+        except Exception:
+            pass  # If no toast, continue
+        edit_service_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    '//*[@id="root"]/div[1]/div/div[2]/main/div/div[1]/button[4]',
+                )
+            )
+        )
+        edit_service_button.click()
+        # Edit the service name
+        service_name_input = self.wait.until(
+            EC.presence_of_element_located((By.NAME, "service_name"))
+        )
+        service_name_input.clear()
+        new_service_name = "Edited Service " + str(random.randint(1000, 9999))
+        service_name_input.send_keys(new_service_name)
+
+        # Optionally, edit other fields if needed (e.g., min_price)
+        min_price_input = self.wait.until(
+            EC.presence_of_element_located((By.NAME, "min_price"))
+        )
+        min_price_input.clear()
+        min_price_input.send_keys("12000")
+
+        # Submit the form
+        submit_button = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']"))
+        )
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", submit_button
+        )
+        time.sleep(0.5)
+        submit_button.click()
+
+        # Verify the service name was updated
+        # time.sleep(0.5)  # Wait for the title to update
+        # Wait for the service title to be updated to the new name
+        self.wait.until(
+            lambda d: d.find_element(
+            By.XPATH,
+            "//h1[contains(@class, 'text-4xl') and contains(@class, 'font-bold')]"
+            ).text.strip().lower() == new_service_name.strip().lower()
+        )
+        service_title = self.wait.until(
+            EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//h1[contains(@class, 'text-4xl') and contains(@class, 'font-bold')]",
+            )
+            )
+        )
+        self.assertEqual(
+            service_title.text.strip().lower(),
+            new_service_name.strip().lower(),
+            "Edited Service Title does not match new Service Name",
+        )
+        print(f"✅ Service edited successfully. New name: '{new_service_name}'")
+
+    def test_8_delete_service(self):
+        try:
+            self.wait.until_not(
+                EC.presence_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))
+            )
         except Exception:
             pass  # If no toast, continue
         # Find the 'Delete' button by its text and class
-        delete_button = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[span and contains(., 'Delete') and contains(@class, 'border-red-500') and contains(@class, 'text-red-500')]")))
+        delete_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//button[span and contains(., 'Delete') and contains(@class, 'border-red-500') and contains(@class, 'text-red-500')]",
+                )
+            )
+        )
         delete_button.click()
 
         # Wait for the Service deleted successfully. message to appear
@@ -310,6 +475,9 @@ class TestVendorService(BaseTest):
             )
         )
         print("✅ Service deleted successfully.")
+
+    
+
 
 if __name__ == "__main__":
     unittest.main()
