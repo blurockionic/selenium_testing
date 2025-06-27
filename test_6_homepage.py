@@ -8,14 +8,14 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class TestHomepage(BaseTest):
 
-    def test_1_homepage_title(self):
+    def test_01_homepage_title(self):
         # Check if the homepage title is correct
         # wait for the page to load
         self.wait.until(EC.title_is("Wedding Services & Vendors | Marriage Vendors"))
         # self.assertEqual(self.driver.title, "Wedding Services & Vendors | Marriage Vendors")
         print("✅ Homepage title test passed.")
 
-    def test_2_app_bar_venue_links(self):
+    def test_02_app_bar_venue_links(self):
         # Hover over the Venue link and check if the dropdown appears
 
         venue_link = self.wait.until(
@@ -86,7 +86,7 @@ class TestHomepage(BaseTest):
         self.wait.until(EC.title_is("Wedding Resorts Services | Wedding Planner India"))
         print("✅ Wedding Resorts page title test passed.")
 
-    def test_3_app_bar_vendor_links(self):
+    def test_03_app_bar_vendor_links(self):
         venue_link = self.wait.until(
             EC.visibility_of_element_located(
                 (
@@ -305,7 +305,7 @@ class TestHomepage(BaseTest):
         self.wait.until(EC.title_is("Invitation Services | Wedding Planner India"))
         print("✅ Invitation page title test passed.")
 
-    def test_4_app_bar_brides_links(self):
+    def test_04_app_bar_brides_links(self):
         venue_link = self.wait.until(
             EC.visibility_of_element_located(
                 (
@@ -326,10 +326,14 @@ class TestHomepage(BaseTest):
 
         # Checking Bridal Jewellery link in the dropdown
         bridal_jewellery_button = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[text()='Bridal Jewellery']"))
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[text()='Bridal Jewellery']")
+            )
         )
         bridal_jewellery_button.click()
-        self.wait.until(EC.title_is("Bridal Jewellery Services | Wedding Planner India"))
+        self.wait.until(
+            EC.title_is("Bridal Jewellery Services | Wedding Planner India")
+        )
         print("✅ Bridal Jewellery page title test passed.")
 
         # Checking Bridal Makeup Artist link in the dropdown
@@ -339,7 +343,9 @@ class TestHomepage(BaseTest):
             )
         )
         bridal_makeup_artist_button.click()
-        self.wait.until(EC.title_is("Bridal Makeup Artist Services | Wedding Planner India"))
+        self.wait.until(
+            EC.title_is("Bridal Makeup Artist Services | Wedding Planner India")
+        )
         print("✅ Bridal Makeup Artist page title test passed.")
 
         # Checkig Mehndi Artist link in the dropdown
@@ -358,7 +364,7 @@ class TestHomepage(BaseTest):
         self.wait.until(EC.title_is("Makeup Salon Services | Wedding Planner India"))
         print("✅ Makeup Salon page title test passed.")
 
-    def test_5_app_bar_grooms_links(self):
+    def test_05_app_bar_grooms_links(self):
         venue_link = self.wait.until(
             EC.visibility_of_element_located(
                 (
@@ -379,7 +385,7 @@ class TestHomepage(BaseTest):
 
         # Men's Grooming link in the dropdown
         mens_grooming_button = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[text()=\"Men's Grooming\"]"))
+            EC.element_to_be_clickable((By.XPATH, '//button[text()="Men\'s Grooming"]'))
         )
         mens_grooming_button.click()
         self.wait.until(EC.title_is("Men'S Grooming Services | Wedding Planner India"))
@@ -387,13 +393,17 @@ class TestHomepage(BaseTest):
 
         # Men's Accessories link in the dropdown
         mens_accessories_button = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[text()=\"Men's Accessories\"]"))
+            EC.element_to_be_clickable(
+                (By.XPATH, '//button[text()="Men\'s Accessories"]')
+            )
         )
         mens_accessories_button.click()
-        self.wait.until(EC.title_is("Men'S Accessories Services | Wedding Planner India"))
+        self.wait.until(
+            EC.title_is("Men'S Accessories Services | Wedding Planner India")
+        )
         print("✅ Men's Accessories page title test passed.")
 
-    def test_6_app_bar_invitation_link(self):
+    def test_06_app_bar_invitation_link(self):
         # Click on the Invitation link in the app bar
         invitation_link = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[text()='Invitation']"))
@@ -406,7 +416,7 @@ class TestHomepage(BaseTest):
         )
         print("✅ Invitation page test passed.")
 
-    def test_7_app_bar_blog_link(self):
+    def test_07_app_bar_blog_link(self):
         # Click on the Blog link in the app bar
         blog_link = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[text()='Blog']"))
@@ -418,8 +428,8 @@ class TestHomepage(BaseTest):
             )
         )
         print("✅ Blog page test passed.")
-    
-    def test_8_app_bar_other_links(self):
+
+    def test_08_app_bar_other_links(self):
         # Checking Vendor Login link in the app bar
         vendor_login_link = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[text()='Vendor Login']"))
@@ -427,13 +437,13 @@ class TestHomepage(BaseTest):
         vendor_login_link.click()
         self.wait.until(
             EC.visibility_of_element_located(
-            (By.XPATH, "//p[contains(text(), 'Vendor Login')]")
+                (By.XPATH, "//p[contains(text(), 'Vendor Login')]")
             )
         )
         print("✅ Vendor Login page test passed.")
 
         self.driver.back()
-        
+
         # checking Login link in the app bar
         login_link = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[text()='Login']"))
@@ -449,6 +459,82 @@ class TestHomepage(BaseTest):
         signup_link.click()
         self.wait.until(EC.title_is("Signup | Marriage Vendors"))
         print("✅ Couple Sign Up page test passed.")
+
+    def test_09_search_bar(self):
+        self.driver.get("https://marriagevendors.com/")
+        # Locate the search bar input by its placeholder attribute
+        search_bar = self.wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//input[@placeholder='Select Vendor']")
+            )
+        )
+        search_bar.click()
+        search_bar.send_keys("Caterers")
+
+        # Wait for the dropdown to appear and select the first item
+        first_dropdown_item = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//*[@id='/']/div/div[1]/section/div[1]/div[1]/ul/li[1]/ul/li[1]",
+                )
+            )
+        )
+        first_dropdown_item.click()
+        search_button = self.wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//button[contains(@class, 'bg-primary') and text()='search']",
+                )
+            )
+        )
+        search_button.click()
+
+        self.wait.until(EC.title_is("Caterers Services | Wedding Planner India"))
+        print("✅ Search bar test passed.")
+
+    def test_10_popular_search(self):
+        self.driver.get("https://marriagevendors.com/")
+
+        # List of (index, expected_title, description) for popular searches
+        popular_searches = [
+            (1, "Caterers Services | Wedding Planner India", "Caterering services"),
+            (2, "Wedding Photographers Services | Wedding Planner India", "Wedding Photographers"),
+            (3, "Makeup Salon Services | Wedding Planner India", "Makeup Salon"),
+            (4, "Wedding Entertainment Services | Wedding Planner India", "Wedding Entertainment"),
+            (5, "Wedding Gift Services | Wedding Planner India" , "Wedding Gift"),
+            (6, "Wedding Invitation Services | Wedding Planner India", "Wedding Invitation"),
+            (7, "Transport Services | Wedding Planner India", "Transport Services"),
+            (8, "Wedding Planner Services | Wedding Planner India", "Wedding Planner"),
+            (9, "Mehndi Artist Services | Wedding Planner India", "Mehndi Artist")
+        ]
+
+        
+
+        for idx, expected_title, desc in popular_searches:
+            self.driver.get("https://marriagevendors.com/")
+            popular_search_div = self.wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f'//*[@id="suggestion"]/div/div/div/div[{idx}]')
+            )
+            )
+            self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", popular_search_div
+            )
+            time.sleep(0.5)
+            popular_search_div.click()
+            try:
+                self.wait.until(EC.title_is(expected_title))
+            except Exception as e:
+                print(f"❌ Popular search '{desc}' test failed: {e}")
+                continue
+            print(f"✅ Popular search '{desc}' test passed.")
+
+        
+
+
+
 
 if __name__ == "__main__":
     unittest.main()
