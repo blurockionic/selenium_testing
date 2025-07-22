@@ -1,9 +1,11 @@
 from base_test import BaseTest
-from utils import user_login, close_modal_if_present
+from utils import user_login, close_modal_if_present, get_test_credentials
 import time
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import unittest
+
 class TestUserAuthentication(BaseTest):
 
     def test_1_invalid_login(self):
@@ -35,14 +37,16 @@ class TestUserAuthentication(BaseTest):
         """
         Perform login using the provided driver, wait, email, and password.
         """
-
+        # Get credentials from environment variables
+        credentials = get_test_credentials()
+        
         # Fill credentials
         email_input = self.wait.until(EC.presence_of_element_located((By.NAME, "email")))
         password_input = self.wait.until(EC.presence_of_element_located((By.NAME, "password")))
         email_input.clear()
         password_input.clear()
-        email_input.send_keys("armanmarya6@gmail.com")
-        password_input.send_keys("Arman2005@")
+        email_input.send_keys(credentials['user_email'])
+        password_input.send_keys(credentials['user_password'])
 
         # Submit
         submit_button = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
@@ -58,7 +62,8 @@ class TestUserAuthentication(BaseTest):
     
     def test_3_authorization(self):
         # Try to access the login page after login
-        self.driver.get("https://www.marriagevendors.com/login")
+        login_url = os.getenv('LOGIN_URL', 'https://www.marriagevendors.com/login')
+        self.driver.get(login_url)
         # Wait for the page to load
         self.wait.until(EC.title_is("Wedding Services & Vendors | Marriage Vendors"))
         self.assertEqual(self.driver.title, "Wedding Services & Vendors | Marriage Vendors")
@@ -85,3 +90,6 @@ class TestUserAuthentication(BaseTest):
         # Confirm logout by waiting for login link to reappear
         self.wait.until(EC.presence_of_element_located((By.LINK_TEXT, "Login")))
         print("✅ Logout successful.")
+
+if __name__ == "__main__":
+    unittest.main()
